@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  ollama:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ollama
+    restart: unless-stopped
+    # networks:
+    #   whitelist_network:
+    ports:
+      - "11434:11434"          # Ollama API
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]   # enable GPU if available
+    entrypoint: >
+      sh -c "
+        ollama serve &
+        sleep 5 &&
+        ollama pull mistral &&
+        ollama pull llama3 &&
+        ollama pull phi3:mini &&
+        wait
+      "
+    # environment:
+    #   - HTTP_PROXY=http://proxy:8888
+    #   - HTTPS_PROXY=http://proxy:8888
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    ports:
+      - "3000:8080"            # WebUI on http://localhost:3000
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      # - HTTP_PROXY=http://proxy:8888
+      # - HTTPS_PROXY=http://proxy:8888
+    depends_on:
+      - ollama
+    volumes:
+      - openwebui_data:/app/backend/data
+    # networks:
+    #   - whitelist_network
+
+#   proxy:
+#     image: vimagick/tinyproxy
+#     container_name: proxy
+#     restart: unless-stopped
+#     ports:
+#       - "8888:8888"
+#     networks:
+#       - whitelist_network
+#     volumes:
+#       - ./tinyproxy.conf:/etc/tinyproxy/tinyproxy.conf:ro
+
+# networks:
+#   whitelist_network:
+
+volumes:
+  ollama_data:
+  openwebui_data:
