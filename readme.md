@@ -30,7 +30,7 @@ This project uses the following tools:
 
 ### TinyProxy
 
-TinyProxy is a lightweight HTTP/HTTPS proxy server. In this setup, it is used to control and restrict outbound internet access from the AI containers. Only whitelisted IP addresses (such as 4.2.2.2 and 8.2.2.2) are allowed for outbound connections, ensuring that no unintended data leaves the local environment. The proxy is configured via a custom `tinyproxy.conf` file, which is mounted into the proxy container.
+TinyProxy is a lightweight HTTP/HTTPS proxy server. In this setup, it is used to control and restrict outbound internet access from the AI containers. Only whitelisted IP addresses (such as 4.2.2.2 and 8.2.2.2) are allowed for outbound connections, ensuring that no unintended data leaves the local environment. The proxy is configured via a custom `tinyproxy.conf` file, which is mounted into the proxy container. If you would like to test if model is truly local, uncomment the proxy in the `docker-compose` file and rerun the build steps below. Then ask it a question and see if it can respond or if it times out.
 
 ## Models
 
