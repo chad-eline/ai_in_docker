@@ -10,6 +10,14 @@ evaluate different AI models locally.
 
 This project uses the following tools:
 
+### [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+
+-Windows Subsystem for Linux
+
+### [Docker Desktop](https://docs.docker.com/desktop/)
+
+- Desktop GUI for the popular container platform.
+
 ### [Ollama](https://ollama.com/)
 
 - Ollama is a model runtime environment.for managing models.
