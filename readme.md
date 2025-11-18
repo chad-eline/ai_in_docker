@@ -12,7 +12,7 @@ This project uses the following tools:
 
 ### [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
 
--Windows Subsystem for Linux
+- Windows Subsystem for Linux
 
 ### [Docker Desktop](https://docs.docker.com/desktop/)
 
