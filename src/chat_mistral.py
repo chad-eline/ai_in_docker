@@ -1,4 +1,4 @@
-# chat_mistral.py
+# src/chat_mistral.py
 import os
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
