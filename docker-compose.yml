@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   ollama:
     build:
@@ -13,6 +11,12 @@ services:
       - "11434:11434"          # Ollama API
     volumes:
       - ollama_data:/root/.ollama
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     deploy:
       resources:
         reservations:
@@ -42,22 +46,31 @@ services:
       # - HTTP_PROXY=http://proxy:8888
       # - HTTPS_PROXY=http://proxy:8888
     depends_on:
-      - ollama
+      ollama:
+        condition: service_healthy
     volumes:
       - openwebui_data:/app/backend/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
     # networks:
     #   - whitelist_network
 
-#   proxy:
-#     image: vimagick/tinyproxy
-#     container_name: proxy
-#     restart: unless-stopped
-#     ports:
-#       - "8888:8888"
-#     networks:
-#       - whitelist_network
-#     volumes:
-#       - ./tinyproxy.conf:/etc/tinyproxy/tinyproxy.conf:ro
+  proxy:
+    profiles: ["with-proxy"]
+    image: vimagick/tinyproxy
+    container_name: proxy
+    restart: unless-stopped
+    ports:
+      - "8888:8888"
+    # networks:
+    #   - whitelist_network
+    volumes:
+      - ./tinyproxy.conf:/etc/tinyproxy/tinyproxy.conf:ro
+      - ./tinyproxy-whitelist.txt:/etc/tinyproxy/whitelist.txt:ro
 
 # networks:
 #   whitelist_network:
