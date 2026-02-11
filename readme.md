@@ -54,6 +54,7 @@ web interface.
 
 | Topic | Description |
 | ----- | ----------- |
+| [API Reference](docs/api-reference.md) | Service URLs and endpoint documentation |
 | [Tools & Technologies](docs/tools.md) | WSL, Docker, Ollama, Open-webui, TinyProxy |
 | [Models](docs/models.md) | Available models and how to add more |
 | [MCP Server](docs/mcp-server.md) | Tool integration, setup, and custom tools |
