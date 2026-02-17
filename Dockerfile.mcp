@@ -1,0 +1,31 @@
+# MCP Server Dockerfile
+# This container runs the MCP server with MCPO proxy for Open-webui integration
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install uv (which provides uvx) and MCP dependencies
+RUN pip install --no-cache-dir uv
+
+# Install MCP and mcpo using uv
+RUN uv pip install --system mcp mcpo
+
+# Copy the MCP server
+COPY src/mcp_server.py /app/mcp_server.py
+
+# Create data directory for tool access
+RUN mkdir -p /data /tmp
+
+# Expose the MCPO proxy port
+EXPOSE 8000
+
+# Run MCPO proxy with the MCP server
+# mcpo bridges stdio-based MCP server to HTTP/OpenAPI
+# --cors-allow-origins allows browser requests from Open-webui
+CMD ["mcpo", "--host", "0.0.0.0", "--port", "8000", "--cors-allow-origins", "*", "--", "python", "/app/mcp_server.py"]

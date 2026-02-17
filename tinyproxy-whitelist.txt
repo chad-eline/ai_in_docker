@@ -1,0 +1,22 @@
+# TinyProxy Destination Whitelist
+# List of allowed destinations when proxy filtering is enabled
+# One domain per line
+
+# DNS resolvers
+4.2.2.2
+8.2.2.2
+
+# Model hosting and AI frameworks
+huggingface.co
+www.huggingface.co
+cdn-lfs.huggingface.co
+huggingface.co:443
+
+# PyPI and Python packages
+pypi.org
+pypi.python.org
+files.pythonhosted.org
+
+# Optional: Add more as needed
+# example.com
+# api.example.com

@@ -1,63 +1,85 @@
 # AI Docker Examples
 
-## Overview
+A simple environment to experiment with AI models locally using a ChatGPT-style
+web interface.
 
-This is a simple example of how to build and run AI models with a chat-gpt style
-web interface. The objective is to create a simple environment to experiment and
-evaluate different AI models locally.
+## Quick Start
 
-## Tools
+1. **Prerequisites:** Docker Desktop running, WSL (on Windows)
 
-This project uses the following tools:
+2. **Build and run:**
+   ```bash
+   make build-and-run
+   ```
 
-### [WSL](https://learn.microsoft.com/en-us/windows/wsl/install)
+3. **Open the web UI:** http://localhost:3000
 
-- Windows Subsystem for Linux
+4. **Select a model** from the dropdown and start chatting!
 
-### [Docker Desktop](https://docs.docker.com/desktop/)
+## Features
 
-- Desktop GUI for the popular container platform.
+- **Local LLMs:** Mistral 7B, Llama 3, Phi-3 Mini (runs offline)
+- **ChatGPT-style UI:** Open-webui with conversations, notes, and knowledge bases
+- **MCP Tools:** File access, Python execution, and more
+- **Optional proxy:** Test true offline capability with network restrictions
 
-### [Ollama](https://ollama.com/)
+## Project Structure
 
-- Ollama is a model runtime environment.for managing models.
-- It is akin to docker but for AI models.
-
-### [Open-webui](https://openwebui.com/)
-
-- Open-webui is an open-source web ui, providing a chat-gpt style interface.
-- It is designed to run and operate totally offline.
-
-### TinyProxy
-
-TinyProxy is a lightweight HTTP/HTTPS proxy server. In this setup, it is used to control and restrict outbound internet access from the AI containers. Only whitelisted IP addresses (such as 4.2.2.2 and 8.2.2.2) are allowed for outbound connections, ensuring that no unintended data leaves the local environment. The proxy is configured via a custom `tinyproxy.conf` file, which is mounted into the proxy container. If you would like to test if model is truly local, uncomment the proxy in the `docker-compose` file and rerun the build steps below. Then ask it a question and see if it can respond or if it times out.
-
-## Models
-
-The following models are pre-loaded into Open-webUI. You can select them in the drop
-down in the top left corner once you're in the webapp.
-
-### [Mistral 7B](https://huggingface.co/mistralai/Mistral-7B-v0.1)
-
-Mistral 7B is a powerful, open-weight large language model designed for efficiency and strong performance on a wide range of tasks. Developed by [Mistral AI](https://mistral.ai/).
-
-### [Llama 3](https://huggingface.co/meta-llama/Meta-Llama-3-8B)
-
-Llama 3 is Meta's latest open large language model, offering improved reasoning and coding abilities. Developed by [Meta AI](https://ai.meta.com/llama/).
-
-### [Phi-3 Mini](https://huggingface.co/microsoft/phi-3-mini-4k-instruct)
-
-Phi-3 Mini is a compact, instruction-tuned language model optimized for efficiency and low resource usage. Developed by [Microsoft Research](https://www.microsoft.com/en-us/research/project/phi/).
-
-## Build and Run
-
-- Make sure docker-desktop is up and running.
-- Then run the following make cmd on the cli. This will build and start the containers.
-
-```bash
-make build-and-run
+```
+.
+├── docker-compose.yml      # Container orchestration
+├── Dockerfile              # Ollama container
+├── Dockerfile.mcp          # MCP server container
+├── Makefile                # Convenience commands
+├── src/                    # Python source files
+│   ├── agent.py            # AI agent scaffold
+│   ├── chat_mistral.py     # Direct model interaction
+│   └── mcp_server.py       # MCP tools implementation
+├── pyproject.toml          # Python dependencies
+└── docs/                   # Documentation
 ```
 
-- Then open the following [this url to the UI.](http://localhost:3000/auth?redirect=%2F)
+## Common Commands
 
-- You can check the status of Ollama [at this URL.](http://localhost:11434/)
+| Command                      | Description                        |
+| ---------------------------- | ---------------------------------- |
+| `make build-and-run`         | Build and start all containers     |
+| `make stop`                  | Stop all containers                |
+| `make logs-all`              | View all container logs            |
+| `make backup`                | Backup Open-webui data             |
+| `make restore`               | Restore from backup                |
+| `make clean`                 | Remove containers and volumes      |
+
+## Documentation
+
+| Topic | Description |
+| ----- | ----------- |
+| [API Reference](docs/api-reference.md) | Service URLs and endpoint documentation |
+| [Tools & Technologies](docs/tools.md) | WSL, Docker, Ollama, Open-webui, TinyProxy |
+| [Models](docs/models.md) | Available models and how to add more |
+| [MCP Server](docs/mcp-server.md) | Tool integration, setup, and custom tools |
+| [Python Development](docs/python-development.md) | uv setup, agent development |
+| [Backup & Restore](docs/backup-restore.md) | Data persistence and recovery |
+| [Troubleshooting](docs/troubleshooting.md) | Common issues and solutions |
+
+## Health Checks
+
+All services include health checks for reliable startup:
+
+- **Ollama:** Checks model list availability
+- **Open-webui:** Checks web server on port 8080
+- **MCP Server:** Checks API endpoint
+
+Open-webui waits for Ollama and MCP server to be healthy before starting.
+
+## Security Notes
+
+- First user to register becomes admin - set a strong password
+- Models run locally - no data sent to external services
+- MCP tools are sandboxed with path and execution restrictions
+
+## Next Steps
+
+- Set up [MCP tools](docs/mcp-server.md) for enhanced capabilities
+- Create [custom models](docs/mcp-server.md#custom-models-with-pre-enabled-tools) with pre-enabled tools
+- Explore the [Python agent](docs/python-development.md) for programmatic access
